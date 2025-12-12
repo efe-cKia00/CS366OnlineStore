@@ -2,48 +2,37 @@
 package cs366onlinestore;
 
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-
-
+import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Customer {
     
     private int customerId;
-    
     private String firstName;
-    
     private String lastName;
-    
     private String email;
-    
     private String phone;
-    
     private String street;
-    
     private String city;
-    
     private String state;
+    private String zip;
     
-    private int zip;
-    
-    
-        // ---------- Constructors ----------
+        // ---------- Constructors ----------    
+    public Customer(
+        String firstName,
+        String lastName,
+        String email,
+        String phone,
+        String street,
+        String city,
+        String state,
+        String zip) {
 
-    
-    public Customer(){}
-    
-    public Customer(int customerId,
-                    String firstName,
-                    String lastName,
-                    String email,
-                    String phone,
-                    String street,
-                    String city,
-                    String state,
-                    int zip) {
-
-        this.customerId = customerId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -101,7 +90,7 @@ public class Customer {
         return state;
     }
 
-    public int getZip() {
+    public String getZip() {
         return zip;
     }
     
@@ -116,7 +105,7 @@ public class Customer {
         this.phone = phone;
     }
 
-    public void updateAddress(String street, String city, String state, int zip) {
+    public void updateAddress(String street, String city, String state, String zip) {
         this.street = street;
         this.city = city;
         this.state = state;
