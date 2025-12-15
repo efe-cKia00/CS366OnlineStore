@@ -40,10 +40,72 @@ public class CS366OnlineStore {
         }
         Scanner scan = new Scanner(System.in);
 
-//        AddCustomer(scan);
-//        EditExistingCustomer(scan);
-//        RemoveCustomer(scan);
-        GetAllCustomers();
+        boolean running = true;
+
+        System.out.println("Welcome to the Online Store Management System");
+        while (running) {
+            System.out.println("======================================================");
+            System.out.println("What would you like to do?");
+            System.out.println("======================================================");
+            System.out.println("1) Work with products");
+            System.out.println("2) Work with customer");
+            System.out.println("3) Work with customer orders");
+            System.out.println("0) Exit Application");
+            System.out.print("\nEnter choice: ");
+
+            int choice = getUserInput(scan);
+
+            switch (choice) {
+                case 1 -> { //runProductMenu
+                }
+                case 2 -> runCustomerMenu(scan);
+                case 3 -> { //runOrderMenu
+                }
+                case 0 -> {
+                    running = false;
+                    System.out.println("Exiting system. Goodbye!");
+                }
+                default -> System.out.println("Invalid selection. Please try again.");
+            }
+        }
+        scan.close();
+    }
+    
+    private static int getUserInput(Scanner scan) {
+        try {
+            String input = scan.nextLine();
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            return -1; // Return -1 to trigger "Invalid selection" in switch cases
+        }
+    }
+    
+    private static void runCustomerMenu(Scanner s) {
+        boolean inMenu = true;
+        while (inMenu) {
+            System.out.println("\n--- CUSTOMER MANAGEMENT MENU ---");
+            System.out.println("1) Add new customer");
+            System.out.println("2) Edit existing customer");
+            System.out.println("3) Remove existing customer");
+            System.out.println("4) View all customers");
+            System.out.println("0) Back to Main Menu");
+            System.out.print("Select Action: ");
+
+            int choice = getUserInput(s);
+
+            switch (choice) {
+                case 1 -> // TODO (Zach): Logic to instantiate Customer and save
+                    AddCustomer(s);
+                case 2 -> // TODO (Zach): Logic to find customer and update fields
+                    EditExistingCustomer(s);
+                case 3 -> // TODO (Zach): Logic to delete customer from data structure
+                    RemoveCustomer(s);
+                case 4 -> // TODO (Zach): Loop through customer list and print details
+                    GetAllCustomers();
+                case 0 -> inMenu = false;
+                default -> System.out.println("Invalid option.");
+            }
+        }
     }
 
     public static void AddCustomer(Scanner s) {
@@ -153,7 +215,7 @@ public class CS366OnlineStore {
 
         // make updated customer
         Customer updatedCust = new Customer(
-                cust.getId(), // <--- THIS IS THE KEY! Pass the existing ID.
+                cust.getId(),
                 fname,
                 lname,
                 email,
