@@ -58,19 +58,21 @@ public class CS366OnlineStore {
             switch (choice) {
                 case 1 -> { //runProductMenu
                 }
-                case 2 -> runCustomerMenu(scan);
+                case 2 ->
+                    runCustomerMenu(scan);
                 case 3 -> { //runOrderMenu
                 }
                 case 0 -> {
                     running = false;
                     System.out.println("Exiting system. Goodbye!");
                 }
-                default -> System.out.println("Invalid selection. Please try again.");
+                default ->
+                    System.out.println("Invalid selection. Please try again.");
             }
         }
         scan.close();
     }
-    
+
     private static int getUserInput(Scanner scan) {
         try {
             String input = scan.nextLine();
@@ -79,7 +81,7 @@ public class CS366OnlineStore {
             return -1; // Return -1 to trigger "Invalid selection" in switch cases
         }
     }
-    
+
     private static void runCustomerMenu(Scanner s) {
         boolean inMenu = true;
         while (inMenu) {
@@ -94,37 +96,97 @@ public class CS366OnlineStore {
             int choice = getUserInput(s);
 
             switch (choice) {
-                case 1 -> // TODO (Zach): Logic to instantiate Customer and save
+                case 1 ->
                     AddCustomer(s);
-                case 2 -> // TODO (Zach): Logic to find customer and update fields
+                case 2 ->
                     EditExistingCustomer(s);
-                case 3 -> // TODO (Zach): Logic to delete customer from data structure
+                case 3 ->
                     RemoveCustomer(s);
-                case 4 -> // TODO (Zach): Loop through customer list and print details
+                case 4 ->
                     GetAllCustomers();
-                case 0 -> inMenu = false;
-                default -> System.out.println("Invalid option.");
+                case 0 ->
+                    inMenu = false;
+                default ->
+                    System.out.println("Invalid option.");
             }
         }
     }
 
     public static void AddCustomer(Scanner s) {
-        System.out.println("Enter First Name:");
-        String fname = s.nextLine();
-        System.out.println("Enter Last Name: ");
-        String lname = s.nextLine();
-        System.out.println("Enter Email: ");
-        String email = s.nextLine();
-        System.out.println("Enter Phone Number: ");
-        String phone = s.nextLine();
-        System.out.println("Enter Street: ");
-        String street = s.nextLine();
-        System.out.println("Enter City: ");
-        String city = s.nextLine();
-        System.out.println("Enter State (i.e. ND, MN, WA): ");
-        String state = s.nextLine();
-        System.out.println("Enter Zip: ");
-        String zip = s.nextLine();
+        String fname, lname, email, phone, street, city, state, zip;
+
+        // FIRST NAME
+        while (true) {
+            System.out.println("Enter First Name:");
+            fname = s.nextLine().trim();
+            if (fname.matches("[a-zA-Z]+")) {
+                break;
+            }
+            System.out.println("Invalid First Name. Only letters allowed");
+        }
+
+        while (true) {
+            System.out.println("Enter Last Name:");
+            lname = s.nextLine().trim();
+            if (lname.matches("[a-zA-Z]+")) {
+                break;
+            }
+            System.out.println("Invalid Last Name. Only letters allowed");
+        }
+
+        while (true) {
+            System.out.println("Enter Email: ");
+            email = s.nextLine().trim();
+            if (email.matches("^[\\w.-]+@[\\w.-]+\\.[a-z]{2,}$")) {
+                break;
+            }
+            System.out.println("Invalid Email.");
+        }
+
+        while (true) {
+            System.out.println("Enter Phone Number (i.e. 1234567890): ");
+            phone = s.nextLine().trim();
+            if (phone.matches("\\d{10}")) {
+                break;
+            }
+            System.out.println("Invalid Phone Number. Only numbers allowed");
+        }
+
+        while (true) {
+            System.out.println("Enter Street: ");
+            street = s.nextLine().trim();
+            if (street.matches("^[a-zA-Z0-9]+\\s+[a-zA-Z0-9\\s.,'-]+$")) {
+                break;
+            }
+            System.out.println("Invalid Street. Include house num, street name, and street type");
+        }
+
+        while (true) {
+            System.out.println("Enter City: ");
+            city = s.nextLine().trim();
+            if (city.matches("^[a-zA-Z .]+$")) {
+                break;
+            }
+            System.out.println("Invalid City. Only letters allowed");
+        }
+
+        while (true) {
+            System.out.println("Enter State (i.e. ND, MN, WA): ");
+            state = s.nextLine().trim();
+            if (state.matches("^[A-Z]{2}$")) {
+                break;
+            }
+            System.out.println("Invalid State. Use 2-letter abbreviation");
+        }
+
+        while (true) {
+            System.out.println("Enter Zip: ");
+            zip = s.nextLine().trim();
+            if (zip.matches("[0-9]{5}")) {
+                break;
+            }
+            System.out.println("Invalid Zip Code. Zip must be exactly 5 digits");
+        }
 
         // creating customer object (placeholder id)
         Customer cust = new Customer(0, fname, lname, email, phone, street, city, state, zip);
@@ -148,71 +210,138 @@ public class CS366OnlineStore {
         //Get Customer record from DB
         Customer cust = custDbOp.getCustomerRecord(firstname.strip(), lastname.strip(), custEmail.strip());
         if (cust == null) {
+            System.out.println("No Customer Returned");
             return;
         }
         System.out.println("=====================================");
         System.out.println("SUCCESS GETTING CUSTOMER!");
         System.out.println("=====================================");
+        
+        String fname, lname, email, phone, street, city, state, zip;
 
         // Edit Customers Details
         System.out.println("EDIT DETAILS");
         System.out.println("=====================================");
-        System.out.println("Edit First Name? (Current = " + cust.getFirstName() + "): ");
-        String fname = s.nextLine();
-        if (fname.isEmpty()) {
-            System.out.println("Skipping Firstname");
-            fname = cust.getFirstName();
+        
+        while(true){
+            System.out.println("Edit First Name? (Current = " + cust.getFirstName() + "): ");
+            String input = s.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Skipping Firstname");
+                fname = cust.getFirstName();
+                break;
+            }
+            if(input.matches("[a-zA-Z]+")){
+                fname = input;
+                break;
+            }
+            System.out.println("Invalid first name. Must only contain letters");
         }
 
-        System.out.println("Edit Last Name? (Current = " + cust.getLastName() + "): ");
-        String lname = s.nextLine();
-        if (lname.isEmpty()) {
-            System.out.println("Skipping Lastname");
-            lname = cust.getLastName();
+        while(true){
+            System.out.println("Edit Last Name? (Current = " + cust.getLastName() + "): ");
+            String input = s.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Skipping Lastname");
+                lname = cust.getLastName();
+                break;
+            }
+            if(input.matches("[a-zA-Z]+")){
+                lname = input;
+                break;
+            }
+            System.out.println("Invalid last name. Must only contain letters");
         }
 
-        System.out.println("Edit Email? (Current = " + cust.getEmail() + "): ");
-        String email = s.nextLine();
-        if (email.isEmpty()) {
-            System.out.println("Skipping Email");
-            email = cust.getEmail();
+        while(true){
+            System.out.println("Edit Email? (Current = " + cust.getEmail() + "): ");
+            String input = s.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Skipping Email");
+                email = cust.getEmail();
+                break;
+            }
+            if(input.matches("^[\\w.-]+@[\\w.-]+\\.[a-z]{2,}$")){
+                email = input;
+                break;
+            }
+            System.out.println("Invalid email");
         }
 
-        System.out.println("Edit Phone? (Current = " + cust.getPhone() + "): ");
-        String phone = s.nextLine();
-        if (phone.isEmpty()) {
-            System.out.println("Skipping Phone");
-            phone = cust.getPhone();
+        while(true){
+            System.out.println("Edit Phone? (Current = " + cust.getPhone() + "): ");
+            String input = s.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Skipping Phone");
+                phone = cust.getPhone();
+                break;
+            }
+            if(input.matches("\\d{10}")){
+                phone = input;
+                break;
+            }
+            System.out.println("Invalid phone number. Must only contain numbers");
         }
 
-        System.out.println("Edit Street? (Current = " + cust.getStreet() + "): ");
-        String street = s.nextLine();
-        if (street.isEmpty()) {
-            System.out.println("Skipping Street");
-            street = cust.getStreet();
+        while(true){
+            System.out.println("Edit Street? (Current = " + cust.getStreet() + "): ");
+            String input = s.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Skipping Street");
+                street = cust.getStreet();
+                break;
+            }
+            if(input.matches("^[a-zA-Z0-9]+\\s+[a-zA-Z0-9\\s.,'-]+$")){
+                street = input;
+                break;
+            }
+            System.out.println("Invalid Street. Must only contain numbers, letters, and spaces");
         }
 
-        System.out.println("Edit City? (Current = " + cust.getCity() + "): ");
-        String city = s.nextLine();
-        if (city.isEmpty()) {
-            System.out.println("Skipping City");
-            city = cust.getCity();
+        while(true){
+            System.out.println("Edit City? (Current = " + cust.getCity() + "): ");
+            String input = s.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Skipping City");
+                city = cust.getCity();
+                break;
+            }
+            if (input.matches("^[a-zA-Z .]+$")) {
+                city = input;
+                break;
+            }
+            System.out.println("Invalid City. Must only contain letters");
         }
 
-        System.out.println("Edit State?(i.e. ND, MN, WA) (Current = " + cust.getState() + "): ");
-        String state = s.nextLine();
-        if (state.isEmpty()) {
-            System.out.println("Skipping State");
-            state = cust.getState();
+        while(true){
+            System.out.println("Edit State? (Current = " + cust.getState() + "): ");
+            String input = s.nextLine().trim().toUpperCase();
+            if (input.isEmpty()) {
+                System.out.println("Skipping State");
+                state = cust.getState();
+                break;
+            }
+            if (input.matches("^[A-Z]{2}$")) {
+                state = input;
+                break;
+            }
+            System.out.println("Invalid State. Must be 2 letter abbreviation");
         }
 
-        System.out.println("Edit ZIP? (Current = " + cust.getZip() + "): ");
-        String zip = s.nextLine();
-        if (zip.isEmpty()) {
-            System.out.println("Skipping ZIP");
-            zip = cust.getZip();
+        while(true){
+            System.out.println("Edit ZIP? (Current = " + cust.getZip() + "): ");
+            String input = s.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Skipping ZIP");
+                zip = cust.getZip();
+                break;
+            }
+            if (input.matches("[0-9]{5}")) {
+                zip = input;
+                break;
+            }
+            System.out.println("Invalid ZIP. Must only be 5 numbers in length");
         }
-
         // make updated customer
         Customer updatedCust = new Customer(
                 cust.getId(),
@@ -234,13 +363,13 @@ public class CS366OnlineStore {
         // Get fname, lname, email, phone_num of Customer to drop
         System.out.println("Enter Details of Customer to edit");
         System.out.println("Customers First Name:");
-        String firstname = s.next();
+        String firstname = s.nextLine().trim();
         System.out.println("Customers Last Name: ");
-        String lastname = s.next();
+        String lastname = s.nextLine().trim();
         System.out.println("Customers Email: ");
-        String custEmail = s.next();
+        String custEmail = s.nextLine().trim();
         System.out.println("Customers Phone Number: ");
-        String phone = s.next();
+        String phone = s.nextLine().trim();
 
         custDbOp.removeCustomerRecord(firstname, lastname, custEmail, phone);
     }
@@ -258,10 +387,10 @@ public class CS366OnlineStore {
                 System.out.println("Name: " + rs.getString("firstname") + " " + rs.getString("lastname"));
                 System.out.println("Email: " + rs.getString("email"));
                 System.out.println("Phone Number: " + rs.getString("phone"));
-                System.out.println("Address: " + rs.getString("street") + " " + 
-                                                 rs.getString("city") + ", " + 
-                                                 rs.getString("state") + ", "+ 
-                                                 rs.getString("zip"));
+                System.out.println("Address: " + rs.getString("street") + " "
+                        + rs.getString("city") + ", "
+                        + rs.getString("state") + ", "
+                        + rs.getString("zip"));
             }
         } catch (SQLException e) {
             System.out.println("Error getting all customer records: " + e.getLocalizedMessage());
