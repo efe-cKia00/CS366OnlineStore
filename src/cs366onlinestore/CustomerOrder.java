@@ -66,7 +66,6 @@ public class CustomerOrder {
 
     public void cancelOrder() {
         orderLines.clear();
-
     }
 
 }

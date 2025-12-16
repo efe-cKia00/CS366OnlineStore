@@ -74,7 +74,6 @@ public class ProductDbOps {
         String sql = "INSERT INTO product (provider_id, category_id, product_name, description, quantity, unit_price) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstmt = dbcon.prepareStatement(sql)) {
-            // Set parameters for the prepared statement
             pstmt.setInt(1, prod.getProviderId());
             pstmt.setInt(2, prod.getCategory());
             pstmt.setString(3, prod.getName());
@@ -82,7 +81,6 @@ public class ProductDbOps {
             pstmt.setInt(5, prod.getQuantity());
             pstmt.setFloat(6, prod.getUnitPrice());
 
-            // Execute the insert
             int rowsAffected = pstmt.executeUpdate();
 
             if (rowsAffected > 0) {
@@ -100,11 +98,9 @@ public class ProductDbOps {
         String getProduct = "SELECT * FROM product WHERE product_name = ? AND category_id = ?";
 
         try (PreparedStatement pstmt = dbcon.prepareStatement(getProduct)) {
-            // Set parameters for the prepared statement
             pstmt.setString(1, productName);
             pstmt.setInt(2, category);
 
-            // Execute the query
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -115,8 +111,7 @@ public class ProductDbOps {
                 String description = rs.getString("description");
                 int quantity = rs.getInt("quantity");
                 float unitPrice = rs.getFloat("unit_price");
-
-                // Create and return the Product object
+                
                 Product prod = new Product(
                         productId,
                         providerId,
@@ -147,14 +142,13 @@ public class ProductDbOps {
                 + "WHERE product_id = ?";
 
         try (PreparedStatement pstmt = dbcon.prepareStatement(updateProduct)) {
-            // Set the values in order
             pstmt.setInt(1, prod.getProviderId());
             pstmt.setInt(2, prod.getCategory());
             pstmt.setString(3, prod.getName());
             pstmt.setString(4, prod.getDescription());
             pstmt.setInt(5, prod.getQuantity());
             pstmt.setFloat(6, prod.getUnitPrice());
-            pstmt.setInt(7, prod.getProductId()); // WHERE clause
+            pstmt.setInt(7, prod.getProductId());
 
             int rowsAffected = pstmt.executeUpdate();
 
