@@ -484,6 +484,34 @@ public class CS366OnlineStore {
         } catch (SQLException e) {
             System.out.println("Error getting all customer records: " + e.getLocalizedMessage());
         }
+        Scanner scan = new Scanner(System.in);
+
+        AddCustomer(scan);
+    }
+
+    public static void AddCustomer(Scanner s) {
+        System.out.println("Enter First Name:");
+        String fname = s.nextLine();
+        System.out.println("Enter Last Name: ");
+        String lname = s.nextLine();
+        System.out.println("Enter Email: ");
+        String email = s.nextLine();
+        System.out.println("Enter Phone Number: ");
+        String phone = s.nextLine();
+        System.out.println("Enter Street: ");
+        String street = s.nextLine();
+        System.out.println("Enter City: ");
+        String city = s.nextLine();
+        System.out.println("Enter State: ");
+        String state = s.nextLine();
+        System.out.println("Enter Zip: ");
+        String zip = s.nextLine();
+
+        // creating customer object
+        Customer cust = new Customer(fname, lname, email, phone, street, city, state, zip);
+
+        // insert known data into db
+        custDbOp.insertCustomerInDb(cust);
     }
 
 }
