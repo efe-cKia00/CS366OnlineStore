@@ -425,9 +425,9 @@ public class CS366OnlineStore {
         }
 
     }
-    
-    public static void GetCustomerOrderHistory(Scanner s){
-         // Get fname and lname of Customer to edit
+
+    public static void GetCustomerOrderHistory(Scanner s) {
+        // Get fname and lname of Customer to edit
         System.out.println("Enter Details of Customer");
         System.out.println("Customers First Name:");
         String firstname = s.next().trim();
@@ -437,9 +437,9 @@ public class CS366OnlineStore {
         String custEmail = s.next().trim();
 
         s.nextLine();
-        
+
         ResultSet rs = custOrderDbOp.viewCustomerOrderHistory(firstname, lastname, custEmail);
-        
+
         if (rs == null) {
             System.out.println("No Orders Found");
             return;
@@ -456,9 +456,9 @@ public class CS366OnlineStore {
             System.out.println("Error getting all customer records: " + e.getLocalizedMessage());
         }
     }
-    
-    public static void GetCustomerOrderedProductHistory(Scanner s){
-         // Get fname and lname of Customer to edit
+
+    public static void GetCustomerOrderedProductHistory(Scanner s) {
+        // Get fname and lname of Customer to edit
         System.out.println("Enter Details of Customer");
         System.out.println("Customers First Name:");
         String firstname = s.next().trim();
@@ -468,9 +468,9 @@ public class CS366OnlineStore {
         String custEmail = s.next().trim();
 
         s.nextLine();
-        
+
         ResultSet rs = custOrderDbOp.viewProductsOrderedByCustomer(firstname, lastname, custEmail);
-        
+
         if (rs == null) {
             System.out.println("No Orders Found");
             return;
@@ -491,31 +491,6 @@ public class CS366OnlineStore {
         AddCustomer(scan);
     }
 
-    /*public static void AddCustomer(Scanner s) {
-        System.out.println("Enter First Name:");
-        String fname = s.nextLine();
-        System.out.println("Enter Last Name: ");
-        String lname = s.nextLine();
-        System.out.println("Enter Email: ");
-        String email = s.nextLine();
-        System.out.println("Enter Phone Number: ");
-        String phone = s.nextLine();
-        System.out.println("Enter Street: ");
-        String street = s.nextLine();
-        System.out.println("Enter City: ");
-        String city = s.nextLine();
-        System.out.println("Enter State: ");
-        String state = s.nextLine();
-        System.out.println("Enter Zip: ");
-        String zip = s.nextLine();
-
-        // creating customer object
-        Customer cust = new Customer(fname, lname, email, phone, street, city, state, zip);
-
-        // insert known data into db
-        custDbOp.insertCustomerInDb(cust);
-    }*/
-
     private static void runProductMenu(Scanner s) {
         boolean inMenu = true;
         while (inMenu) {
@@ -527,20 +502,20 @@ public class CS366OnlineStore {
             System.out.println("5) View most expensive product");
             System.out.println("0) Back to Main Menu");
             System.out.print("Select Action: ");
-            
+
             int choice = getUserInput(s);
-            
-            switch (choice){
+
+            switch (choice) {
                 case 1 ->
                     addNewProduct(s);
                 case 2 ->
                     editExistingProduct(s);
                 case 3 ->
-                    viewProductPriceChangeHistory();
+                    viewProductPriceChangeHistory(s);
                 case 4 ->
                     viewMostPopularItems();
                 case 5 ->
-                    viewMostExpensiveProduct();
+                    viewMostExpensiveProduct(s);
                 case 0 ->
                     inMenu = false;
                 default ->
@@ -548,110 +523,110 @@ public class CS366OnlineStore {
             }
         }
     }
- 
+
     private static void addNewProduct(Scanner s) {
-    int providerId, category, quantity;
-    float unitPrice;
-    String productName, description;
-    
-    // PROVIDER ID
-    while (true) {
-        System.out.println("Enter the provider id: ");
-        try {
-            providerId = s.nextInt();
-            s.nextLine(); // consume newline
-            if (providerId > 0) {
+        int providerId, category, quantity;
+        float unitPrice;
+        String productName, description;
+
+        // PROVIDER ID
+        while (true) {
+            System.out.println("Enter the provider id: ");
+            try {
+                providerId = s.nextInt();
+                s.nextLine(); // consume newline
+                if (providerId > 0) {
+                    break;
+                }
+                System.out.println("Invalid provider id. Must be a positive number.");
+            } catch (Exception e) {
+                System.out.println("Invalid input. Only numbers allowed.");
+                s.nextLine(); // clear invalid input
+            }
+        }
+
+        // CATEGORY
+        while (true) {
+            System.out.println("Enter the category number: ");
+            try {
+                category = s.nextInt();
+                s.nextLine(); // consume newline
+                if (category > 0) {
+                    break;
+                }
+                System.out.println("Invalid category id. Must be a positive number.");
+            } catch (Exception e) {
+                System.out.println("Invalid input. Only numbers allowed.");
+                s.nextLine(); // clear invalid input
+            }
+        }
+
+        // PRODUCT NAME
+        while (true) {
+            System.out.println("Enter the product name: ");
+            productName = s.nextLine().trim();
+            if (productName.matches("^[a-zA-Z0-9\\s]+$") && !productName.isEmpty()) {
                 break;
             }
-            System.out.println("Invalid provider id. Must be a positive number.");
-        } catch (Exception e) {
-            System.out.println("Invalid input. Only numbers allowed.");
-            s.nextLine(); // clear invalid input
+            System.out.println("Invalid product name. Letters, numbers, and spaces allowed.");
         }
-    }
-    
-    // CATEGORY
-    while (true) {
-        System.out.println("Enter the category number: ");
-        try {
-            category = s.nextInt();
-            s.nextLine(); // consume newline
-            if (category > 0) {
+
+        // DESCRIPTION
+        while (true) {
+            System.out.println("Enter the product description: ");
+            description = s.nextLine().trim();
+            if (!description.isEmpty()) {
                 break;
             }
-            System.out.println("Invalid category id. Must be a positive number.");
-        } catch (Exception e) {
-            System.out.println("Invalid input. Only numbers allowed.");
-            s.nextLine(); // clear invalid input
+            System.out.println("Invalid description. Cannot be empty.");
         }
-    }
-    
-    // PRODUCT NAME
-    while (true) {
-        System.out.println("Enter the product name: ");
-        productName = s.nextLine().trim();
-        if (productName.matches("^[a-zA-Z0-9\\s]+$") && !productName.isEmpty()) {
-            break;
-        }
-        System.out.println("Invalid product name. Letters, numbers, and spaces allowed.");
-    }
-    
-    // DESCRIPTION
-    while (true) {
-        System.out.println("Enter the product description: ");
-        description = s.nextLine().trim();
-        if (!description.isEmpty()) {
-            break;
-        }
-        System.out.println("Invalid description. Cannot be empty.");
-    }
-    
-    // QUANTITY
-    while (true) {
-        System.out.println("Enter the quantity: ");
-        try {
-            quantity = s.nextInt();
-            s.nextLine(); // consume newline
-            if (quantity >= 0) {
-                break;
+
+        // QUANTITY
+        while (true) {
+            System.out.println("Enter the quantity: ");
+            try {
+                quantity = s.nextInt();
+                s.nextLine(); // consume newline
+                if (quantity >= 0) {
+                    break;
+                }
+                System.out.println("Invalid quantity. Must be zero or positive.");
+            } catch (Exception e) {
+                System.out.println("Invalid input. Only numbers allowed.");
+                s.nextLine(); // clear invalid input
             }
-            System.out.println("Invalid quantity. Must be zero or positive.");
-        } catch (Exception e) {
-            System.out.println("Invalid input. Only numbers allowed.");
-            s.nextLine(); // clear invalid input
         }
-    }
-    
-    // UNIT PRICE
-    while (true) {
-        System.out.println("Enter the unit price: ");
-        try {
-            unitPrice = s.nextFloat();
-            s.nextLine(); // consume newline
-            if (unitPrice > 0) {
-                break;
+
+        // UNIT PRICE
+        while (true) {
+            System.out.println("Enter the unit price: ");
+            try {
+                unitPrice = s.nextFloat();
+                s.nextLine(); // consume newline
+                if (unitPrice > 0) {
+                    break;
+                }
+                System.out.println("Invalid unit price. Must be a positive number.");
+            } catch (Exception e) {
+                System.out.println("Invalid input. Only numbers allowed.");
+                s.nextLine(); // clear invalid input
             }
-            System.out.println("Invalid unit price. Must be a positive number.");
-        } catch (Exception e) {
-            System.out.println("Invalid input. Only numbers allowed.");
-            s.nextLine(); // clear invalid input
         }
+
+        // creating product object (placeholder id)
+        Product prod = new Product(0, providerId, category, quantity, unitPrice, productName, description);
+
+        // insert known data into db
+        prodDbOp.insertProductInDb(prod);
     }
-    
-    // creating product object (placeholder id)
-    Product prod = new Product(0, providerId, category, quantity, unitPrice, productName, description);
-    
-    // insert known data into db
-    prodDbOp.insertProductInDb(prod);
-    }
-    
+
     private static void editExistingProduct(Scanner s) {
         System.out.println("Enter the details of the product");
         System.out.print("What's the name of the product: ");
         String productname = s.next();
         System.out.print("What is the product category: ");
         int category = s.nextInt();
-        
+
         //Get Product from Db
         Product prod = prodDbOp.getProductRecord(productname, category);
         if (prod == null) {
@@ -669,7 +644,7 @@ public class CS366OnlineStore {
         // Edit Product Details
         System.out.println("EDIT DETAILS");
         System.out.println("=====================================");
-        
+
         while (true) {
             System.out.println("Edit the Provider? (Current = " + prod.getProviderId() + "): ");
             String input = s.nextLine().trim();
@@ -679,12 +654,12 @@ public class CS366OnlineStore {
                 break;
             }
             if (input.matches("[a-zA-Z]+")) {
-                providerid_ = input;
+                providerid_ = Integer.parseInt(input);
                 break;
             }
             System.out.println("Invalid Provider id. Must only bontain numbers");
         }
-        
+
         while (true) {
             System.out.println("Edit the Product Category? (Current = " + prod.getCategory() + "): ");
             String input = s.nextLine().trim();
@@ -699,7 +674,7 @@ public class CS366OnlineStore {
             }
             System.out.println("Invalid Category id. Must only bontain numbers");
         }
-        
+
         while (true) {
             System.out.println("Edit the Product Quantity (Current = " + prod.getQuantity() + "): ");
             String input = s.nextLine().trim();
@@ -714,7 +689,7 @@ public class CS366OnlineStore {
             }
             System.out.println("Invalid Category id. Must only bontain numbers");
         }
-        
+
         while (true) {
             System.out.println("Edit the Product Price? (Current = " + prod.getUnitPrice() + "): ");
             String input = s.nextLine().trim();
@@ -729,7 +704,7 @@ public class CS366OnlineStore {
             }
             System.out.println("Invalid Category id. Must only bontain numbers");
         }
-        
+
         while (true) {
             System.out.println("Edit the Product Name? (Current = " + prod.getProductName() + "): ");
             String input = s.nextLine().trim();
@@ -744,7 +719,7 @@ public class CS366OnlineStore {
             }
             System.out.println("Invalid Category id. Must only bontain numbers");
         }
-        
+
         while (true) {
             System.out.println("Edit the Product Description? (Current = " + prod.getDescription() + "): ");
             String input = s.nextLine().trim();
@@ -759,7 +734,7 @@ public class CS366OnlineStore {
             }
             System.out.println("Invalid Category id. Must only bontain numbers");
         }
-        
+
         // make updated product
         Product updatedProd = new Product(
                 prod.getProductId(),
@@ -774,15 +749,58 @@ public class CS366OnlineStore {
         //send it to the db
         prodDbOp.editProductRecord(updatedProd);
     }
-    
-    private static void viewProductPriceChangeHistory() {
+
+    private static void viewProductPriceChangeHistory(Scanner s) {
+        System.out.println("Enter the details of the product");
+        System.out.print("What's the name of the product: ");
+        String productname = s.nextLine();
+        System.out.print("What is the product category: ");
+        String category = s.nextLine();
         
+        ResultSet rs = prodDbOp.getProductPriceChangeHistory(productname, category);
+        
+        if(rs == null){
+            System.out.println("No Products Found");
+            return;
+        }
+        try {
+            System.out.println("Price Change History");
+            while (rs.next()) {
+                System.out.println("=====================================");
+                System.out.println("Old Price: " + rs.getString("old_price"));
+                System.out.println("New Price: " + rs.getString("new_price"));
+                System.out.println("Reason For Change: " + rs.getString("reason_changed"));
+                System.out.println("Changed At: " + rs.getString("changed_at"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting price change history: " + e.getLocalizedMessage());
+        }
     }
-    
+
     private static void viewMostPopularItems() {
     }
-    
-    private static void viewMostExpensiveProduct() {
+
+    private static void viewMostExpensiveProduct(Scanner s) {
+        System.out.println("View Most Expensive Products");
+        System.out.println("How Many Products do you want to see?");
+        int numberOfItems = s.nextInt();
         
+        ResultSet rs = prodDbOp.getMostExpensiveProducts(numberOfItems);
+        
+        if(rs == null){
+            System.out.println("No Products Found");
+            return;
+        }
+        try {
+            System.out.println("Most Expensive Products");
+            while (rs.next()) {
+                System.out.println("=====================================");
+                System.out.println("Product Name: " + rs.getString("product_name"));
+                System.out.println("Category Name: " + rs.getString("category_name"));
+                System.out.println("Product Price: " + rs.getString("unit_price"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting products: " + e.getLocalizedMessage());
+        }
     }
 }
